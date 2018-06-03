@@ -6,7 +6,7 @@ import numpy as np
 import io
 import csv
 
-def readfile(name, column):
+def read_csv_and_normalize(name):
 	filename = name+'.csv'
 	try:
 		'''
@@ -17,17 +17,30 @@ def readfile(name, column):
 				localizacao [] = line
 		'''
 		#localizacao,descricao,data,dep,obs = []
+		
 		dict = {'_localizacao':[],'_descricaoImovel':[],'_dataDeAquisicao':[],'_departamento':[],'_observacoes':[]}
+		
+		localizacao = []
 		descricao = []
 		dataDeAquisicao = []
 		departamento = []
 		observacoes = []
+		nmrPorSetor = 0
+
 		with io.open(filename,'r',encoding='utf8',errors="ignore",newline='') as f:
 			reader = csv.reader(f)
 			i = 0
 			for row in reader:
+				
 				str1 = ''.join(row)
 				list = str1.split(';')
+				if len(list)==1:
+					if "na divis" not in list[0]:
+						local = list[0]
+						#for com qtd de vezes iterando em nmrPorSetor 
+						#localizacao.append(list[0])
+					else:
+						nmrPorSetor = int(list[0].split(' ', 1)[0])
 				if len(list)==4:
 					try:
 						descricao.append(list[0])
@@ -36,11 +49,19 @@ def readfile(name, column):
 						observacoes.append(list[3])
 					except Exception as e:
 						print ("\nError.: "+str(e))
-				i+=1
-												
-		dict = {'_localizacao':[],'_descricaoImovel':descricao,'_dataDeAquisicao':dataDeAquisicao,'_departamento':departamento,'_observacoes':observacoes}
-		#print len(dict.get('_departamento'))
 
+				for x in range(0,nmrPorSetor):
+					localizacao.append(local)
+				i+=1
+		
+			dict['_localizacao'].append(localizacao)
+			dict['_descricaoImovel'].append(descricao)
+			dict['_dataDeAquisicao'].append(dataDeAquisicao)
+			dict['_departamento'].append(departamento)
+			dict['_observacoes'].append(observacoes)
+
+		return dict
+	
 	except Exception as e:
 		print ("\nError.: "+str(e))
 		quit()
@@ -51,6 +72,9 @@ def readfile(name, column):
 		arquivos.writelines(arquivo)
 		return arquivos
 		'''
-
-name = 'dadosImoveisPrefeituraAlegrete'
-csv =  readfile(name,0)
+def main():	
+	name = 'dadosImoveisPrefeituraAlegrete'
+	dict =  read_csv_and_normalize(name)
+	df = pd.DataFrame.from_dict(dict)
+	print df.head(1)
+main()
