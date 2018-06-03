@@ -7,19 +7,11 @@ import io
 import csv
 
 def read_csv_and_normalize(name):
+
 	filename = name+'.csv'
+
 	try:
-		'''
-		with io.open(filename,'r',encoding='utf8',errors="ignore") as f:
-			lines = f.readlines()
-			count = 0
-			for line in lines:
-				localizacao [] = line
-		'''
-		#localizacao,descricao,data,dep,obs = []
-		
-		dict = {'_localizacao':[],'_descricaoImovel':[],'_dataDeAquisicao':[],'_departamento':[],'_observacoes':[]}
-		
+
 		localizacao = []
 		descricao = []
 		dataDeAquisicao = []
@@ -28,8 +20,11 @@ def read_csv_and_normalize(name):
 		nmrPorSetor = 0
 
 		with io.open(filename,'r',encoding='utf8',errors="ignore",newline='') as f:
+
 			reader = csv.reader(f)
+
 			i = 0
+
 			for row in reader:
 				#Cada linha virava uma lista				
 				#transformo todos elementos dessa lista numa string unica
@@ -44,15 +39,15 @@ def read_csv_and_normalize(name):
 					#os que contem apenas o nome do bairro
 					if "na divis" not in list[0]:
 						local = list[0]
-						#for com qtd de vezes iterando em nmrPorSetor 
-						#localizacao.append(list[0])
 					
 					#E os que contem informacoes sobre a quantidade de terrenos naquele bairro, setor ou etc
 					else:
 						nmrPorSetor = int(list[0].split(' ', 1)[0])
-				
+						for x in range(0,nmrPorSetor):
+							localizacao.append(local)
+
 				#para os elementos que tem 4, sabemos que eles contem informacoes sobre o terreno em si
-				if len(list)==4:
+				if len(list)>1:
 					try:
 						descricao.append(list[0])
 						dataDeAquisicao.append(list[1])
@@ -60,32 +55,42 @@ def read_csv_and_normalize(name):
 						observacoes.append(list[3])
 					except Exception as e:
 						print ("\nError.: "+str(e))
-
-				for x in range(0,nmrPorSetor):
-					localizacao.append(local)
 				i+=1
-		
-			dict['_localizacao'].append(localizacao)
-			dict['_descricaoImovel'].append(descricao)
-			dict['_dataDeAquisicao'].append(dataDeAquisicao)
-			dict['_departamento'].append(departamento)
-			dict['_observacoes'].append(observacoes)
+				
 
-		return dict
+		print len(localizacao),len(descricao),len(dataDeAquisicao),len(departamento),len(observacoes)	
+		print localizacao[230]
+		df = pd.DataFrame({'localizacao':localizacao,
+		                   'descricao':descricao,
+		                   'dataDeAquisicao':dataDeAquisicao,
+		                   'departamento':departamento,
+		                   'observacoes':observacoes})
+		
+		'''
+		#Escrever um csv correto com os dados
+		texto = []
+		texto.append('localizacao;descricao;dataDeAquisicao;departamento;observacoes')
+		for l in range(0,len(descricao)):
+			texto.append(localizacao[l]+';'+descricao[l]+';'+dataDeAquisicao[l]+';'+departamento[l]+';'+observacoes[l])
+		try:
+			resultFyle = open("saida.csv",'w')
+			for r in texto:
+			    resultFyle.write(r + "\n")
+			resultFyle.close()
+					
+		except Exception as e:
+			print ("\nError.: "+str(e))
+			quit()
+		'''
+		return df
 	
 	except Exception as e:
-		print ("\nError.: "+str(e))
+		print ("\nError1.: "+str(e))
 		quit()
 		
-		'''
-		arquivos = open('csv.txt', 'w')
-		f.close()
-		arquivos.writelines(arquivo)
-		return arquivos
-		'''
+
 def main():	
 	name = 'dadosImoveisPrefeituraAlegrete'
-	dict =  read_csv_and_normalize(name)
-	df = pd.DataFrame.from_dict(dict)
+	df = read_csv_and_normalize(name)
 
 main()
