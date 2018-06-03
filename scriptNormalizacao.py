@@ -58,8 +58,6 @@ def read_csv_and_normalize(name):
 				i+=1
 				
 
-		print len(localizacao),len(descricao),len(dataDeAquisicao),len(departamento),len(observacoes)	
-		print localizacao[230]
 		df = pd.DataFrame({'localizacao':localizacao,
 		                   'descricao':descricao,
 		                   'dataDeAquisicao':dataDeAquisicao,
@@ -92,5 +90,14 @@ def read_csv_and_normalize(name):
 def main():	
 	name = 'dadosImoveisPrefeituraAlegrete'
 	df = read_csv_and_normalize(name)
+	
+	#quantos imoveis há por localizacao?
+	#print df.groupby('localizacao').count()
+	
+	#quantos imoveis há por departamento(urbanos e rurais)?
+	#print df['departamento'].value_counts()
+
+	#Quantos imoveis foram adquiridos antes do ano 1999?
+
 
 main()
