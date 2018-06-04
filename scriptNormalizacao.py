@@ -189,5 +189,7 @@ def main():
 	#print df['localizacao'].value_counts()
 	#print df.localizacao[df.localizacao == "CAPO DO ANGICO"].count()
  
+ 
+ 	
 
 main()
