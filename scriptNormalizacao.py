@@ -166,7 +166,9 @@ def main():
 	#print calculaQuantosMaiorQueData(df,criaData("1/1/1999")) 
 
 	#Quantos imoveis foram adquiridos por mandato?
+	#print len(t[(t.year >= 1950) & (t.year <= 1959)])
 	'''
+
 	print imoveisPorMandato(df,criaData("1/1/1968"),criaData("31/12/1972")) 
 	print imoveisPorMandato(df,criaData("1/1/1973"),criaData("31/12/1976")) 
 	print imoveisPorMandato(df,criaData("1/1/1977"),criaData("31/12/1982"))
@@ -183,6 +185,9 @@ def main():
 	#quantos imoveis estao na zona leste?
 	#print containsObs(df,"zona leste")
 
-
+	#quantos imoveis no bairro capao do angico
+	#print df['localizacao'].value_counts()
+	#print df.localizacao[df.localizacao == "CAPO DO ANGICO"].count()
  
+
 main()
