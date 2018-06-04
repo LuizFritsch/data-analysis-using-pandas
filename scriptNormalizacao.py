@@ -140,6 +140,13 @@ def imoveisPorMandato(df,dataInicio,dataFim):
 
 	return count
 
+def containsObs(df,stg):
+	try:
+		count = df['observacoes'].str.contains(stg,regex=False).value_counts()
+		return count
+	except Exception as e:
+		print("Nao foi possivel calcular quantos imoveis contem em sua observacao a string "+stg+" :(") 
+	
 
 
 def main():	
@@ -172,15 +179,10 @@ def main():
 	print imoveisPorMandato(df,criaData("1/1/2008"),criaData("31/12/2011"))
 	print imoveisPorMandato(df,criaData("1/1/2012"),criaData("31/12/2016"))
 	print imoveisPorMandato(df,criaData("1/1/2016"),criaData("31/12/2018"))
-	''' 
- 
- 
- 
- 
- 
- 
- 
- 
- 	
+	'''
+	#quantos imoveis estao na zona leste?
+	#print containsObs(df,"zona leste")
 
+
+ 
 main()
