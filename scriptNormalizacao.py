@@ -5,6 +5,8 @@ import pandas as pd
 import numpy as np
 import io
 import csv
+import re
+from datetime import datetime
 
 def read_csv_and_normalize(name):
 
@@ -50,7 +52,12 @@ def read_csv_and_normalize(name):
 				if len(list)>1:
 					try:
 						descricao.append(list[0])
-						dataDeAquisicao.append(list[1])
+						data = str(list[1])
+						try:
+							dataDeAquisicao.append(datetime.strptime(data,"%d/%m/%Y"))
+						except Exception as e:
+							print data
+							print ("Erro ao converter uma data: ",e)
 						departamento.append(list[2])
 						observacoes.append(list[3])
 					except Exception as e:
@@ -85,7 +92,55 @@ def read_csv_and_normalize(name):
 	except Exception as e:
 		print ("\nError1.: "+str(e))
 		quit()
+
+def criaData(dataDesejada):
+	try:
+		data = datetime.strptime(dataDesejada,"%d/%m/%Y")
+		return data
+	except Exception as e:
+		print (" Data invalida: "+str(e))
+
+def calculaQuantosMenorQueData(df,dataDesejada):
+
+	count = 0
+
+	for d in df['dataDeAquisicao']:
+				
+		if d<dataDesejada:
+			count+=1
+
+	return count
+
+
+def calculaQuantosMaiorQueData(df,dataDesejada):
+
+	count = 0
+
+	for d in df['dataDeAquisicao']:
+	
+		try:
+			if d>dataDesejada:
+				count+=1
+		except Exception as e:
+			pass
 		
+	return count
+
+def imoveisPorMandato(df,dataInicio,dataFim):
+	
+	count = 0
+
+	for d in df['dataDeAquisicao']:
+	
+		try:
+			if d>=dataInicio and d<=dataFim:
+				count+=1
+		except Exception as e:
+			pass
+
+	return count
+
+
 
 def main():	
 	name = 'dadosImoveisPrefeituraAlegrete'
@@ -97,7 +152,35 @@ def main():
 	#quantos imoveis há por departamento(urbanos e rurais)?
 	#print df['departamento'].value_counts()
 
-	#Quantos imoveis foram adquiridos antes do ano 1999?
+	#Quantos imoveis foram adquiridos antes do ano 1/1/1999?
+	#print calculaQuantosMenorQueData(df,datetime.strptime("1/1/1111","%d/%m/%Y")) 
 
+	#Quantos imoveis foram adquiridos depois do ano 1/1/1999?
+	#print calculaQuantosMaiorQueData(df,criaData("1/1/1999")) 
+
+	#Quantos imoveis foram adquiridos por mandato?
+	'''
+	print imoveisPorMandato(df,criaData("1/1/1968"),criaData("31/12/1972")) 
+	print imoveisPorMandato(df,criaData("1/1/1973"),criaData("31/12/1976")) 
+	print imoveisPorMandato(df,criaData("1/1/1977"),criaData("31/12/1982"))
+	print imoveisPorMandato(df,criaData("1/1/1983"),criaData("31/12/1988"))
+	print imoveisPorMandato(df,criaData("1/1/1989"),criaData("31/12/1992"))
+	print imoveisPorMandato(df,criaData("1/1/1993"),criaData("31/12/1996"))
+	print imoveisPorMandato(df,criaData("1/1/1997"),criaData("31/12/2000"))
+	print imoveisPorMandato(df,criaData("1/1/2001"),criaData("31/12/2004"))
+	print imoveisPorMandato(df,criaData("1/1/2005"),criaData("31/12/2007"))
+	print imoveisPorMandato(df,criaData("1/1/2008"),criaData("31/12/2011"))
+	print imoveisPorMandato(df,criaData("1/1/2012"),criaData("31/12/2016"))
+	print imoveisPorMandato(df,criaData("1/1/2016"),criaData("31/12/2018"))
+	''' 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
 
 main()
